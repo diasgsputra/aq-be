@@ -20,7 +20,8 @@ exports.readAllTask = async (req, res) => {
             id: task.id,
             name: task.name,
             description: task.description,
-            status: task.status
+            status: task.status,
+            ranking: task.ranking
         }));
 
         res.json({ data: response });
@@ -42,7 +43,8 @@ exports.readTaskById = async (req, res) => {
             id: task.id,
             name: task.name,
             description: task.description,
-            status: task.status
+            status: task.status,
+            ranking: task.ranking
         };
 
         res.json({ data: response });
