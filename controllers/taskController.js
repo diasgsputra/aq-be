@@ -17,12 +17,12 @@ exports.readAllTask = async (req, res) => {
     try {
         const order = req.query.order || 'ASC';
         const tasks = await taskService.getAllTasks(order);
-        
+        console.log(tasks)
         const response = tasks.map(task => ({
             id: task.id,
             name: task.name,
             description: task.description,
-            status: task.status===false?'to do':'done'
+            status: task.status
         }));
 
         res.json({ data: response });
@@ -44,7 +44,7 @@ exports.readTaskById = async (req, res) => {
             id: task.id,
             name: task.name,
             description: task.description,
-            status: task.status === false ? 'to do' : 'done'
+            status: task.status
         };
 
         res.json({ data: response });
