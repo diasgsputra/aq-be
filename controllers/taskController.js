@@ -15,9 +15,7 @@ exports.createTask = async (req, res) => {
 
 exports.readAllTask = async (req, res) => {
     try {
-        const order = req.query.order || 'DESC';
-        const tasks = await taskService.getAllTasks(order);
-        console.log(tasks)
+        const tasks = await taskService.getAllTasks();
         const response = tasks.map(task => ({
             id: task.id,
             name: task.name,
