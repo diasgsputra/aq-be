@@ -4,8 +4,9 @@ exports.createTask = async (req, res) => {
     try {
         const { name,description } = req.body;
         const status = false
+        const important = await taskService.getMaxOrder();
 
-        await taskService.createTask(name,description,status);
+        await taskService.createTask(name,description,status,important);
 
         res.status(201).json({ message: 'Task created successfully' });
     } catch (error) {
@@ -57,6 +58,7 @@ exports.updateTaskById= async (req, res) => {
     try {
       const { id } = req.params;
       const { name, description} = req.body;
+      console.log("masuk sini")
   
       const updatedTask = await taskService.updateTaskById(id, name, description);
       if (!updatedTask) {
@@ -100,5 +102,20 @@ exports.deleteTaskById = async (req, res) => {
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Gagal menghapus task' });
+    }
+  }
+
+
+  exports.moveOrder = async (req, res) => {
+    try {
+      const { id,ranking } = req.body;
+      const currentRanking = await taskService.getCurrentRanking(id)
+      const moveRanking = await taskService.updateOrder(id, currentRanking.ranking,ranking);
+    
+  
+      res.json({ message: "Urutan berhasil diperbarui"});
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Gagal mengupdate urutan' });
     }
   }

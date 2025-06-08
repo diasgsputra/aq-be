@@ -1,14 +1,14 @@
 const { sequelize, Task } = require('../models');
 
-exports.createTask = async (name, description, status) => {
-    return await Task.create({ name,description,status });
+exports.createTask = async (name, description, status,important) => {
+    return await Task.create({ name,description,status,important });
 };
 
 exports.getAllTasks = async (order) => {
     const sortOrder = order.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
 
     const taskQuery = `
-        SELECT * FROM tasks ORDER BY createdAt ${sortOrder}
+        SELECT * FROM tasks ORDER BY ranking ${sortOrder}
     `;
 
     return await sequelize.query(taskQuery, {
@@ -25,11 +25,67 @@ exports.getTaskById = async (id) => {
     return orderTypes[0]
 };
 
+exports.getMaxOrder = async () => {
+    const maxQuery = `SELECT MAX(important)+1 FROM tasks`;
+    const max = await sequelize.query(maxQuery, {
+        type: sequelize.QueryTypes.SELECT,
+    });
+
+    return max[0]
+};
+
+exports.getCurrentRanking = async (id) => {
+    const rankingQuery = `SELECT ranking FROM tasks WHERE id = :id`;
+    const ranking = await sequelize.query(rankingQuery, {
+        replacements: { id },
+        type: sequelize.QueryTypes.SELECT,
+    });
+
+    return ranking[0];
+};
+
+exports.updateOrder = async (id,currentRanking,expectedRanking) => {
+    return await sequelize.transaction(async (t) => {
+    if (currentRanking > expectedRanking) {
+      await sequelize.query(
+        `UPDATE tasks
+         SET ranking = ranking + 1
+         WHERE ranking >= :expectedRanking AND ranking < :currentRanking`,
+        {
+          replacements: { expectedRanking, currentRanking },
+          transaction: t,
+        }
+      );
+    } else if (currentRanking < expectedRanking) {
+      await sequelize.query(
+        `UPDATE tasks
+         SET ranking = ranking - 1
+         WHERE ranking > :currentRanking AND ranking <= :expectedRanking`,
+        {
+          replacements: { expectedRanking, currentRanking },
+          transaction: t,
+        }
+      );
+    }
+
+    await sequelize.query(
+      `UPDATE tasks
+       SET ranking = :expectedRanking
+       WHERE id = :id`,
+      {
+        replacements: { id, expectedRanking },
+        transaction: t,
+      }
+    );
+
+    return true;
+  });
+};
+
 exports.updateTaskById = async (id, name, description) => {
     const task = await Task.findOne({ where: { id: id } });
       if (!task) return null; 
   
-      // Update nilai yang baru
       task.name = name || task.name;
       task.description = description || task.description;
   
