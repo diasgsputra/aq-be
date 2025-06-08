@@ -4,9 +4,8 @@ exports.createTask = async (req, res) => {
     try {
         const { name,description } = req.body;
         const status = false
-        const rangking = await taskService.getMaxOrder();
-
-        await taskService.createTask(name,description,status,rangking);
+        const max = await taskService.getMaxOrder();
+        await taskService.createTask(name,description,status,max.ranking);
 
         res.status(201).json({ message: 'Task created successfully' });
     } catch (error) {

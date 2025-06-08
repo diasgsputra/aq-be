@@ -1,7 +1,7 @@
 const { sequelize, Task } = require('../models');
 
-exports.createTask = async (name, description, status,rangking) => {
-    return await Task.create({ name,description,status,rangking });
+exports.createTask = async (name, description, status,ranking) => {
+    return await Task.create({ name,description,status,ranking });
 };
 
 exports.getAllTasks = async (order) => {
@@ -26,7 +26,7 @@ exports.getTaskById = async (id) => {
 };
 
 exports.getMaxOrder = async () => {
-    const maxQuery = `SELECT MAX(ranking)+1 FROM tasks`;
+    const maxQuery = `SELECT MAX(ranking)+1 AS ranking FROM tasks`;
     const max = await sequelize.query(maxQuery, {
         type: sequelize.QueryTypes.SELECT,
     });
