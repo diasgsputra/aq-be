@@ -1,7 +1,7 @@
 const { sequelize, Task } = require('../models');
 
-exports.createTask = async (name, description, status,important) => {
-    return await Task.create({ name,description,status,important });
+exports.createTask = async (name, description, status,rangking) => {
+    return await Task.create({ name,description,status,rangking });
 };
 
 exports.getAllTasks = async (order) => {

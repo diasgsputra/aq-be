@@ -4,9 +4,9 @@ exports.createTask = async (req, res) => {
     try {
         const { name,description } = req.body;
         const status = false
-        const important = await taskService.getMaxOrder();
+        const rangking = await taskService.getMaxOrder();
 
-        await taskService.createTask(name,description,status,important);
+        await taskService.createTask(name,description,status,rangking);
 
         res.status(201).json({ message: 'Task created successfully' });
     } catch (error) {
@@ -16,7 +16,7 @@ exports.createTask = async (req, res) => {
 
 exports.readAllTask = async (req, res) => {
     try {
-        const order = req.query.order || 'ASC';
+        const order = req.query.order || 'DESC';
         const tasks = await taskService.getAllTasks(order);
         console.log(tasks)
         const response = tasks.map(task => ({
