@@ -26,7 +26,7 @@ exports.getTaskById = async (id) => {
 };
 
 exports.getMaxOrder = async () => {
-    const maxQuery = `SELECT MAX(important)+1 FROM tasks`;
+    const maxQuery = `SELECT MAX(ranking)+1 FROM tasks`;
     const max = await sequelize.query(maxQuery, {
         type: sequelize.QueryTypes.SELECT,
     });
