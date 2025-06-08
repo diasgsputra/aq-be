@@ -48,7 +48,7 @@ exports.updateOrder = async (id,currentRanking,expectedRanking) => {
     if (currentRanking > expectedRanking) {
       await sequelize.query(
         `UPDATE tasks
-         SET ranking = ranking - 1
+         SET ranking = ranking + 1
          WHERE ranking >= :expectedRanking AND ranking < :currentRanking`,
         {
           replacements: { expectedRanking, currentRanking },
@@ -58,7 +58,7 @@ exports.updateOrder = async (id,currentRanking,expectedRanking) => {
     } else if (currentRanking < expectedRanking) {
       await sequelize.query(
         `UPDATE tasks
-         SET ranking = ranking + 1
+         SET ranking = ranking - 1
          WHERE ranking > :currentRanking AND ranking <= :expectedRanking`,
         {
           replacements: { expectedRanking, currentRanking },
